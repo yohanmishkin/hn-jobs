@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import JobListings from './components/JobListings';
 
@@ -18,34 +18,27 @@ function App() {
   );
 }
 
-class JobFilters extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { includeRemote: false };
+function JobFilters(props) {
+  const [includeRemote, setIncludeRemote] = useState(false);
 
-    this.toggleRemoteJobs = this.toggleRemoteJobs.bind(this);
-  }
-
-  toggleRemoteJobs(event) {
+  const toggleRemoteJobs = event => {
     let includeRemote = event.target.checked;
-    this.props.fetchListings(includeRemote);
-    this.setState({ includeRemote });
-  }
+    props.fetchListings(includeRemote);
+    setIncludeRemote(includeRemote);
+  };
 
-  render() {
-    return (
-      <form>
-        <label htmlFor="remote-checkbox">Remote</label>
+  return (
+    <form>
+      <label htmlFor="remote-checkbox">Remote</label>
 
-        <input
-          id="remote-checkbox"
-          onChange={this.toggleRemoteJobs}
-          type="checkbox"
-          value={this.state.includeRemote}
-        />
-      </form>
-    );
-  }
+      <input
+        id="remote-checkbox"
+        onChange={toggleRemoteJobs}
+        type="checkbox"
+        value={includeRemote}
+      />
+    </form>
+  );
 }
 
 export default App;
