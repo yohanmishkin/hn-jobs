@@ -1,30 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import JobListings from './components/JobListings';
+import store from './components/side-effects/store';
 
 function App() {
-  let results = [{}, {}];
-  let fetchListings = params => {
-    console.log('fetching listings...', params);
-  };
+  const [listings, setListings] = useState([]);
+  const [includeRemote, setIncludeRemote] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let response = await fetch(
+        `/api/listings?includeRemote=${includeRemote}`
+      );
+      let json = await response.json();
+      setListings(json.listings);
+    };
+
+    fetchData();
+  }, [includeRemote]);
 
   return (
     <div className="App">
       <h1>Welcome</h1>
 
-      <JobFilters fetchListings={fetchListings} />
-      <JobListings results={results} />
+      <JobFilters
+        includeRemote={includeRemote}
+        toggleRemote={setIncludeRemote}
+      />
+
+      <JobListings results={listings} />
     </div>
   );
 }
 
 function JobFilters(props) {
-  const [includeRemote, setIncludeRemote] = useState(false);
-
   const toggleRemoteJobs = event => {
-    let includeRemote = event.target.checked;
-    props.fetchListings(includeRemote);
-    setIncludeRemote(includeRemote);
+    props.toggleRemote(event.target.checked);
   };
 
   return (
@@ -35,7 +46,7 @@ function JobFilters(props) {
         id="remote-checkbox"
         onChange={toggleRemoteJobs}
         type="checkbox"
-        value={includeRemote}
+        value={props.includeRemote}
       />
     </form>
   );
