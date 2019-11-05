@@ -32,3 +32,5 @@ it('can filter for remote listings', () => {
 });
 
 it.skip('it shows message when no listings found', () => {});
+
+it.skip('it shows loading spinner', () => {});
