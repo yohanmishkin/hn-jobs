@@ -4,21 +4,22 @@ import {
   fireEvent,
   getByLabelText,
   render,
-  waitForElement
+  waitForElement,
+  waitForElementToBeRemoved
 } from '@testing-library/react';
 import React from 'react';
 
-let server;
-
-beforeEach(() => {
-  server = makeServer({ environment: 'test' });
-});
-
-afterEach(() => {
-  server.shutdown();
-});
-
 describe('gnews', () => {
+  let server;
+
+  beforeEach(() => {
+    server = makeServer({ environment: 'test' });
+  });
+
+  afterEach(() => {
+    server.shutdown();
+  });
+
   it('renders without crashing', () => {
     const { getByText } = render(<App />);
 
@@ -39,7 +40,15 @@ describe('gnews', () => {
     expect(listings.length).toBe(2);
   });
 
-  it.skip('it shows message when no listings found', () => {});
+  it('loading spinner displayed while fetching listings', () => {
+    const { container, getAllByTestId } = render(<App />);
 
-  it.skip('it shows loading spinner', () => {});
+    fireEvent.click(getByLabelText(container, 'Remote'));
+
+    let loadingSpinner = getAllByTestId('loading');
+
+    expect(loadingSpinner).toBeDefined();
+  });
+
+  it.skip('it shows message when no listings found', () => {});
 });

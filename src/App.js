@@ -6,14 +6,17 @@ import store from './components/side-effects/store';
 function App() {
   const [listings, setListings] = useState([]);
   const [includeRemote, setIncludeRemote] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       let response = await fetch(
         `/api/listings?includeRemote=${includeRemote}`
       );
       let json = await response.json();
       setListings(json.listings);
+      setIsLoading(false);
     };
 
     fetchData();
@@ -28,7 +31,7 @@ function App() {
         toggleRemote={setIncludeRemote}
       />
 
-      <JobListings results={listings} />
+      <JobListings isLoading={isLoading} results={listings} />
     </div>
   );
 }
