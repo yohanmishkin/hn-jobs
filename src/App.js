@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import JobListings from './components/JobListings';
+import FetchedListings from './components/side-effects/FetchedListings';
+import JobFilters from './components/ui/JobFilters';
+import JobListings from './components/ui/JobListings';
 import store from './components/side-effects/store';
 
 function App() {
@@ -25,33 +27,15 @@ function App() {
   return (
     <div className="App">
       <h1>Welcome</h1>
+      <React.Fragment>
+        <JobFilters
+          includeRemote={includeRemote}
+          toggleRemote={setIncludeRemote}
+        />
 
-      <JobFilters
-        includeRemote={includeRemote}
-        toggleRemote={setIncludeRemote}
-      />
-
-      <JobListings isLoading={isLoading} results={listings} />
+        <JobListings isLoading={isLoading} results={listings} />
+      </React.Fragment>
     </div>
-  );
-}
-
-function JobFilters(props) {
-  const toggleRemoteJobs = event => {
-    props.toggleRemote(event.target.checked);
-  };
-
-  return (
-    <form>
-      <label htmlFor="remote-checkbox">Remote</label>
-
-      <input
-        id="remote-checkbox"
-        onChange={toggleRemoteJobs}
-        type="checkbox"
-        value={props.includeRemote}
-      />
-    </form>
   );
 }
 
