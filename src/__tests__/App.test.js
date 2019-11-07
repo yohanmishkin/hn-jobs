@@ -50,5 +50,15 @@ describe('gnews', () => {
     expect(loadingSpinner).toBeDefined();
   });
 
-  it.skip('it shows message when no listings found', () => {});
+  it('it shows message when no listings found', async () => {
+    const { container, getByTestId, getByText } = render(<App />);
+
+    fireEvent.click(getByLabelText(container, 'Remote'));
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    expect(
+      getByText(`Sorry! We couldn't find any listings like that.`)
+    ).toBeDefined();
+  });
 });
