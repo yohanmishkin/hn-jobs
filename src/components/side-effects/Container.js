@@ -6,17 +6,26 @@ export default function(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const fetchData = async () => {
       setIsLoading(true);
       let response = await fetch(
         `/api/listings?includeRemote=${includeRemote}`
       );
       let json = await response.json();
-      setListings(json.listings);
-      setIsLoading(false);
+
+      if (!isCancelled) {
+        setListings(json.listings);
+        setIsLoading(false);
+      }
     };
 
     fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [includeRemote]);
 
   return props.children({
