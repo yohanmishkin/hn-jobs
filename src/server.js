@@ -1,4 +1,4 @@
-import { Server, Model, Factory } from 'miragejs';
+import { Server, Model } from 'miragejs';
 
 export function makeServer({ environment = 'development' } = {}) {
   let server = new Server({
@@ -6,6 +6,16 @@ export function makeServer({ environment = 'development' } = {}) {
 
     models: {
       listing: Model
+    },
+
+    seeds(server) {
+      server.create('listing', { remote: false });
+      server.create('listing', { remote: true });
+      server.create('listing', { remote: true });
+      server.create('listing', { remote: true });
+      server.create('listing', { remote: true });
+      server.create('listing', { remote: false });
+      server.create('listing', { remote: false });
     },
 
     routes() {
