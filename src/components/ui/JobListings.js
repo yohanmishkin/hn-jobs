@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function JobListings({ isLoading, results }) {
   if (isLoading) {
-    return <span data-testid="loading"></span>;
+    return <span data-testid="loading">Loading...</span>;
   }
 
   if (results.length === 0) {

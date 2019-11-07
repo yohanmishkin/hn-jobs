@@ -1,4 +1,4 @@
-import { Server, Model } from 'miragejs';
+import { Server, Model, Factory } from 'miragejs';
 
 export function makeServer({ environment = 'development' } = {}) {
   let server = new Server({
@@ -8,19 +8,21 @@ export function makeServer({ environment = 'development' } = {}) {
       listing: Model
     },
 
+    factories: {
+      listing: Factory.extend({
+        remote() {
+          return Math.random() >= 0.5;
+        }
+      })
+    },
+
     seeds(server) {
-      server.create('listing', { remote: false });
-      server.create('listing', { remote: true });
-      server.create('listing', { remote: true });
-      server.create('listing', { remote: true });
-      server.create('listing', { remote: true });
-      server.create('listing', { remote: false });
-      server.create('listing', { remote: false });
+      server.createList('listing', 8);
     },
 
     routes() {
       this.namespace = 'api';
-      this.timing = 0;
+      this.timing = 800;
 
       this.get('/listings', (db, request) => {
         let includeRemote = request.queryParams.includeRemote;
