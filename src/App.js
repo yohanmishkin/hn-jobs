@@ -8,6 +8,7 @@ function App() {
   return (
     <div className="App">
       <h1>Welcome</h1>
+
       <Container>
         {container => (
           <div>
@@ -15,6 +16,8 @@ function App() {
               includeRemote={container.includeRemote}
               toggleRemote={container.setIncludeRemote}
             />
+
+            <h2>{container.listings.length} job listings</h2>
 
             <JobListings
               isLoading={container.isLoading}

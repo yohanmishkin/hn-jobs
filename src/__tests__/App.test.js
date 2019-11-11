@@ -2,7 +2,6 @@ import App from '../App';
 import { makeServer } from '../server';
 import {
   fireEvent,
-  getByLabelText,
   render,
   waitForElement,
   waitForElementToBeRemoved
@@ -31,19 +30,22 @@ describe('gnews', () => {
     server.create('listing', { remote: true });
     server.create('listing', { remote: true });
 
-    const { container, getAllByTestId } = render(<App />);
+    const { container, getAllByTestId, getByLabelText, getByText } = render(
+      <App />
+    );
 
-    fireEvent.click(getByLabelText(container, 'Remote'));
+    fireEvent.click(getByLabelText('Remote'));
 
     let listings = await waitForElement(() => getAllByTestId('listing'));
 
     expect(listings.length).toBe(2);
+    expect(getByText('2 job listings')).toBeDefined();
   });
 
   it('loading spinner displayed while fetching listings', () => {
-    const { container, getAllByTestId } = render(<App />);
+    const { container, getAllByTestId, getByLabelText } = render(<App />);
 
-    fireEvent.click(getByLabelText(container, 'Remote'));
+    fireEvent.click(getByLabelText('Remote'));
 
     let loadingSpinner = getAllByTestId('loading');
 
@@ -51,9 +53,11 @@ describe('gnews', () => {
   });
 
   it('it shows message when no listings found', async () => {
-    const { container, getByTestId, getByText } = render(<App />);
+    const { container, getByTestId, getByText, getByLabelText } = render(
+      <App />
+    );
 
-    fireEvent.click(getByLabelText(container, 'Remote'));
+    fireEvent.click(getByLabelText('Remote'));
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
