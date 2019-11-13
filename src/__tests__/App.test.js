@@ -30,9 +30,11 @@ describe('gnews', () => {
     server.create('listing', { remote: true });
     server.create('listing', { remote: true });
 
-    const { container, getAllByTestId, getByLabelText, getByText } = render(
+    const { getByTestId, getAllByTestId, getByLabelText, getByText } = render(
       <App />
     );
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     fireEvent.click(getByLabelText('Remote'));
 
@@ -42,24 +44,40 @@ describe('gnews', () => {
     expect(getByText('2 job listings')).toBeDefined();
   });
 
-  it('loading spinner displayed while fetching listings', () => {
-    const { container, getAllByTestId, getByLabelText } = render(<App />);
+  it('can filter by technology', async () => {
+    server.create('listing', { description: 'C is FAST' });
+    server.create('listing', { description: 'Elm is COOL' });
+    server.create('listing', { description: 'Javascript' });
+    server.create('listing', { description: 'Clojure is INTRIGUING' });
 
-    fireEvent.click(getByLabelText('Remote'));
-
-    let loadingSpinner = getAllByTestId('loading');
-
-    expect(loadingSpinner).toBeDefined();
-  });
-
-  it('it shows message when no listings found', async () => {
-    const { container, getByTestId, getByText, getByLabelText } = render(
+    const { getByTestId, getAllByTestId, getByLabelText, getByText } = render(
       <App />
     );
 
-    fireEvent.click(getByLabelText('Remote'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.change(getByLabelText('Technologies'), {
+      target: { value: 'cloj' }
+    });
+    fireEvent.click(getByText('Clojure'));
+
+    let listings = await waitForElement(() => getAllByTestId('listing'));
+
+    expect(listings.length).toBe(1);
+  });
+
+  it('loading spinner displayed while fetching listings', () => {
+    const { getByTestId } = render(<App />);
+
+    expect(getByTestId('loading')).toBeDefined();
+  });
+
+  it('it shows message when no listings found', async () => {
+    const { getByTestId, getByText, getByLabelText } = render(<App />);
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.click(getByLabelText('Remote'));
 
     expect(
       getByText(`Sorry! We couldn't find any listings like that.`)

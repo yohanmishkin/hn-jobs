@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Container from './components/side-effects/Container';
+import FilteredListings from './components/ui/FilteredListings';
 import JobFilters from './components/ui/JobFilters';
 import JobListings from './components/ui/JobListings';
 
@@ -10,21 +11,34 @@ function App() {
       <h1>Welcome</h1>
 
       <Container>
-        {container => (
-          <div>
-            <JobFilters
-              includeRemote={container.includeRemote}
-              toggleRemote={container.setIncludeRemote}
-            />
+        {container => {
+          if (container.isLoading) {
+            return <h2 data-testid="loading">Loading...</h2>;
+          }
 
-            <h2>{container.listings.length} job listings</h2>
+          return (
+            <FilteredListings listings={container.listings}>
+              {(
+                changeRemoteness,
+                changeTechnology,
+                filteredListings,
+                includeRemote
+              ) => (
+                <div>
+                  <JobFilters
+                    filterListingsByTechnology={changeTechnology}
+                    includeRemote={includeRemote}
+                    toggleRemote={changeRemoteness}
+                  />
 
-            <JobListings
-              isLoading={container.isLoading}
-              results={container.listings}
-            />
-          </div>
-        )}
+                  <h2>{filteredListings.length} job listings</h2>
+
+                  <JobListings results={filteredListings} />
+                </div>
+              )}
+            </FilteredListings>
+          );
+        }}
       </Container>
     </div>
   );

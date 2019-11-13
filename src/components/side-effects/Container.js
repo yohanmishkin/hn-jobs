@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 export default function(props) {
   const [listings, setListings] = useState([]);
-  const [includeRemote, setIncludeRemote] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -10,13 +9,12 @@ export default function(props) {
 
     const fetchData = async () => {
       setIsLoading(true);
-      let response = await fetch(
-        `/api/listings?includeRemote=${includeRemote}`
-      );
+
+      let response = await fetch(`/api/listings`);
       let json = await response.json();
 
       if (!isCancelled) {
-        setListings(json.listings);
+        setListings(json);
         setIsLoading(false);
       }
     };
@@ -26,11 +24,9 @@ export default function(props) {
     return () => {
       isCancelled = true;
     };
-  }, [includeRemote]);
+  }, []);
 
   return props.children({
-    includeRemote,
-    setIncludeRemote,
     isLoading,
     listings
   });

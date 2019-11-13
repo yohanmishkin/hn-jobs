@@ -10,6 +10,9 @@ export function makeServer({ environment = 'development' } = {}) {
 
     factories: {
       listing: Factory.extend({
+        description() {
+          return 'qwers';
+        },
         remote() {
           return Math.random() >= 0.5;
         }
@@ -18,15 +21,15 @@ export function makeServer({ environment = 'development' } = {}) {
 
     seeds(server) {
       server.createList('listing', 8);
+      server.create('listing', { description: 'clojure is cool' });
     },
 
     routes() {
       this.namespace = 'api';
-      this.timing = 800;
+      // this.timing = 400;
 
-      this.get('/listings', (db, request) => {
-        let includeRemote = request.queryParams.includeRemote;
-        return db.listings.where({ remote: includeRemote });
+      this.get('/listings', ({ db }) => {
+        return db.listings;
       });
     }
   });
