@@ -17,6 +17,11 @@ export default function FilteredListings(props) {
     );
   };
 
+  const [byRemoteness, _] = useState(() => {});
+  const [byTechnologies, __] = useState(() => {});
+  const listings = props.listings.filter(byRemoteness).filter(byTechnologies);
+  // const updateRemoteness =
+
   return props.children(
     changeRemoteness,
     filterByTechnology,

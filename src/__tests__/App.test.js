@@ -46,7 +46,6 @@ describe('gnews', () => {
 
   it('can filter by technology', async () => {
     server.create('listing', { description: 'C is FAST' });
-    server.create('listing', { description: 'Elm is COOL' });
     server.create('listing', { description: 'Javascript' });
     server.create('listing', { description: 'Clojure is INTRIGUING' });
 
@@ -64,6 +63,37 @@ describe('gnews', () => {
     let listings = await waitForElement(() => getAllByTestId('listing'));
 
     expect(listings.length).toBe(1);
+  });
+
+  it('can filter by multiple technologies', async () => {
+    server.create('listing', { description: 'C is FAST' });
+    server.create('listing', { description: 'Elm is COOL' });
+    server.create('listing', { description: 'Javascript' });
+    server.create('listing', { description: 'Clojure is INTRIGUING' });
+
+    const { getByTestId, getAllByTestId, getByLabelText, getByText } = render(
+      <App />
+    );
+
+    await waitForElementToBeRemoved(() => getByTestId('loading'));
+
+    fireEvent.change(getByLabelText('Technologies'), {
+      target: { value: 'cloj' }
+    });
+    fireEvent.click(getByText('Clojure'));
+
+    let listingsA = await waitForElement(() => getAllByTestId('listing'));
+
+    expect(listingsA.length).toBe(1);
+
+    fireEvent.change(getByLabelText('Technologies'), {
+      target: { value: 'elm' }
+    });
+    fireEvent.click(getByText('Elm'));
+
+    let listingsB = await waitForElement(() => getAllByTestId('listing'));
+
+    expect(listingsB.length).toBe(2);
   });
 
   it('loading spinner displayed while fetching listings', () => {

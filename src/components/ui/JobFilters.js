@@ -1,6 +1,11 @@
 import React from 'react';
 import Select from 'react-select';
 
+const technologies = [
+  { value: 'clojure', label: 'Clojure' },
+  { value: 'elm', label: 'Elm' }
+];
+
 export default function JobFilters(props) {
   const toggleRemoteJobs = event => {
     props.toggleRemote(event.target.checked);
@@ -15,7 +20,7 @@ export default function JobFilters(props) {
       <label htmlFor="technologies-multi-select">Technologies</label>
       <Select
         inputId="technologies-multi-select"
-        options={[{ value: 'clojure', label: 'Clojure' }]}
+        options={technologies}
         onChange={filterListings}
       />
 
