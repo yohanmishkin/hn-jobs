@@ -1,12 +1,11 @@
-import App from '../App';
-import { makeServer } from '../server';
 import {
   fireEvent,
   render,
-  waitForElement,
   waitForElementToBeRemoved
 } from '@testing-library/react';
 import React from 'react';
+import App from '../App';
+import { makeServer } from '../server';
 
 describe('gnews', () => {
   let server;
@@ -26,11 +25,11 @@ describe('gnews', () => {
   });
 
   it('can filter for remote listings', async () => {
+    let listingA = server.create('listing', { remote: true });
+    let listingB = server.create('listing', { remote: true });
     server.create('listing', { remote: false });
-    server.create('listing', { remote: true });
-    server.create('listing', { remote: true });
 
-    const { getByTestId, getAllByTestId, getByLabelText, getByText } = render(
+    const { getByTestId, getByLabelText, getByText, findByTestId } = render(
       <App />
     );
 
@@ -38,32 +37,43 @@ describe('gnews', () => {
 
     fireEvent.click(getByLabelText('Remote'));
 
-    let listings = await waitForElement(() => getAllByTestId('listing'));
+    await findByTestId(`listing-${listingA.id}`);
+    await findByTestId(`listing-${listingB.id}`);
 
-    expect(listings.length).toBe(2);
-    expect(getByText('2 job listings')).toBeDefined();
+    expect(getByText('2 job listings'));
   });
 
-  it('can filter by technology', async () => {
+  it('can filter by multiple technologies', async () => {
+    let listingA = server.create('listing', {
+      description: 'Clojure is INTRIGUING',
+      remote: false
+    });
+    let listingB = server.create('listing', {
+      description: 'Elm is COOL',
+      remote: true
+    });
     server.create('listing', { description: 'C is FAST' });
-    server.create('listing', { description: 'Elm is COOL' });
     server.create('listing', { description: 'Javascript' });
-    server.create('listing', { description: 'Clojure is INTRIGUING' });
 
-    const { getByTestId, getAllByTestId, getByLabelText, getByText } = render(
+    const { findByTestId, getByTestId, getByLabelText, getByText } = render(
       <App />
     );
 
     await waitForElementToBeRemoved(() => getByTestId('loading'));
 
     fireEvent.change(getByLabelText('Technologies'), {
-      target: { value: 'cloj' }
+      target: { value: 'clojure' }
     });
     fireEvent.click(getByText('Clojure'));
 
-    let listings = await waitForElement(() => getAllByTestId('listing'));
+    await findByTestId(`listing-${listingA.id}`);
 
-    expect(listings.length).toBe(1);
+    fireEvent.change(getByLabelText('Technologies'), {
+      target: { value: 'elm' }
+    });
+    fireEvent.click(getByText('Elm'));
+
+    await findByTestId(`listing-${listingB.id}`);
   });
 
   it('loading spinner displayed while fetching listings', () => {
@@ -80,7 +90,7 @@ describe('gnews', () => {
     fireEvent.click(getByLabelText('Remote'));
 
     expect(
-      getByText(`Sorry! We couldn't find any listings like that.`)
+      getByText("Sorry! We couldn't find any listings like that.")
     ).toBeDefined();
   });
 });

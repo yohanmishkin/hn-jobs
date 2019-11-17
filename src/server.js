@@ -20,17 +20,19 @@ export function makeServer({ environment = 'development' } = {}) {
     },
 
     seeds(server) {
-      server.createList('listing', 8);
-      server.create('listing', { description: 'clojure is cool' });
+      server.createList('listing', 8, { description: 'elm', remote: true });
+      server.create('listing', {
+        description: 'clojure is cool',
+        remote: false
+      });
+      server.create('listing', { description: 'elm is cool', remote: false });
     },
 
     routes() {
       this.namespace = 'api';
       // this.timing = 400;
 
-      this.get('/listings', ({ db }) => {
-        return db.listings;
-      });
+      this.get('/listings', ({ db }) => db.listings);
     }
   });
 

@@ -1,9 +1,8 @@
-import React from 'react';
-import './App.css';
-import Container from './components/side-effects/Container';
-import FilteredListings from './components/ui/FilteredListings';
+import Container from './components/effects/Container';
+import SearchResults from './components/effects/SearchResults';
 import JobFilters from './components/ui/JobFilters';
 import JobListings from './components/ui/JobListings';
+import React from 'react';
 
 function App() {
   return (
@@ -17,26 +16,20 @@ function App() {
           }
 
           return (
-            <FilteredListings listings={container.listings}>
-              {(
-                changeRemoteness,
-                changeTechnology,
-                filteredListings,
-                includeRemote
-              ) => (
+            <SearchResults listings={container.listings}>
+              {(remoteChanged, technologiesChanged, results) => (
                 <div>
                   <JobFilters
-                    filterListingsByTechnology={changeTechnology}
-                    includeRemote={includeRemote}
-                    toggleRemote={changeRemoteness}
+                    technologiesChanged={technologiesChanged}
+                    remoteChanged={remoteChanged}
                   />
 
-                  <h2>{filteredListings.length} job listings</h2>
+                  <h2>{results.length} job listings</h2>
 
-                  <JobListings results={filteredListings} />
+                  <JobListings results={results} />
                 </div>
               )}
-            </FilteredListings>
+            </SearchResults>
           );
         }}
       </Container>

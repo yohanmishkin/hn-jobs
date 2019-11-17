@@ -1,13 +1,14 @@
 import React from 'react';
 import Select from 'react-select';
+import PropTypes from 'prop-types';
 
-export default function JobFilters(props) {
+const JobFilters = function jobFilters(props) {
   const toggleRemoteJobs = event => {
-    props.toggleRemote(event.target.checked);
+    props.remoteChanged(event.target.checked);
   };
 
-  const filterListings = ({ value: technology }) => {
-    props.filterListingsByTechnology(technology);
+  const updateTechnologies = technologies => {
+    props.technologiesChanged(technologies.map(tech => tech.value));
   };
 
   return (
@@ -15,17 +16,23 @@ export default function JobFilters(props) {
       <label htmlFor="technologies-multi-select">Technologies</label>
       <Select
         inputId="technologies-multi-select"
-        options={[{ value: 'clojure', label: 'Clojure' }]}
-        onChange={filterListings}
+        isMulti={true}
+        options={[
+          { value: 'clojure', label: 'Clojure' },
+          { value: 'elm', label: 'Elm' }
+        ]}
+        onChange={updateTechnologies}
       />
 
       <label htmlFor="remote-checkbox">Remote</label>
-      <input
-        id="remote-checkbox"
-        onChange={toggleRemoteJobs}
-        type="checkbox"
-        value={props.includeRemote}
-      />
+      <input id="remote-checkbox" onChange={toggleRemoteJobs} type="checkbox" />
     </form>
   );
-}
+};
+
+JobFilters.propTypes = {
+  technologiesChanged: PropTypes.func.isRequired,
+  remoteChanged: PropTypes.func.isRequired
+};
+
+export default JobFilters;

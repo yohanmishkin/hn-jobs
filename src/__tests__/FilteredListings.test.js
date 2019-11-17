@@ -1,33 +1,63 @@
-import FilteredListings from '../components/domain/FilteredListings';
+import filteredListings from '../domain/filteredListings';
 
-describe('FilteredListings', () => {
-  it('filters single technology', () => {
-    let listings = [
+describe('filteredListings', () => {
+  it('yields listings for a single technology', () => {
+    const listings = [
       { description: 'Elm is cool' },
       { description: 'Python is cool' },
       { description: 'C# is cool' }
     ];
+    const remote = false;
+    const technologies = ['elm'];
 
-    expect(FilteredListings(listings, ['elm']).length).toBe(1);
+    expect(filteredListings(listings, technologies, remote).length).toBe(1);
   });
 
-  it('filters the union of multiple technologies', () => {
-    let listings = [
+  it('yields the union of multiple technologies', () => {
+    const listings = [
       { description: 'Elm is cool' },
       { description: 'Python is cool' },
       { description: 'C# is cool' }
     ];
+    const remote = false;
+    const technologies = ['elm', 'python'];
 
-    expect(FilteredListings(listings, ['elm', 'python']).length).toBe(2);
+    expect(filteredListings(listings, technologies, remote).length).toBe(2);
   });
 
-  it('filters the intersection of remoteness and multiple technologies', () => {
-    let listings = [
+  it('yields the intersection of remoteness and multiple technologies', () => {
+    const listings = [
       { description: 'Elm is cool', remote: true },
       { description: 'Python is cool', remote: false },
       { description: 'C# is cool', remote: true }
     ];
+    const remote = true;
+    const technologies = ['elm', 'python'];
 
-    expect(FilteredListings(listings, ['elm', 'python'], true).length).toBe(1);
+    expect(filteredListings(listings, technologies, remote).length).toBe(1);
+  });
+
+  it('yields all remote listings if no technologies provided', () => {
+    const listings = [
+      { description: 'Elm is cool', remote: true },
+      { description: 'Python is cool', remote: false },
+      { description: 'C# is cool', remote: true }
+    ];
+    const remote = true;
+    const technologies = [];
+
+    expect(filteredListings(listings, technologies, remote).length).toBe(2);
+  });
+
+  it('yields both remote and in-office listings if remote not specifically expected', () => {
+    const listings = [
+      { description: 'Elm is cool', remote: true },
+      { description: 'Python is cool', remote: false },
+      { description: 'C# is cool', remote: true }
+    ];
+    const remote = false;
+    const technologies = ['elm', 'python'];
+
+    expect(filteredListings(listings, technologies, remote).length).toBe(2);
   });
 });
