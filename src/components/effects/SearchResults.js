@@ -1,7 +1,7 @@
 import filteredListings from '../../domain/filteredListings';
 import { useEffect, useState } from 'react';
 
-export default function Qwer(props) {
+export default function SearchResults(props) {
   const [remote, remoteChanged] = useState(false);
   const [technologies, technologiesChanged] = useState([]);
   const [results, setResults] = useState([]);

@@ -13,8 +13,9 @@ export default function(props) {
       let response = await fetch(
         `https://hacker-news.firebaseio.com/v0/user/whoishiring.json`
       );
-      let { submitted: whoIsHiring } = await response.json();
-      let latestWhoIsHiringId = whoIsHiring[0];
+      let {
+        submitted: [latestWhoIsHiringId]
+      } = await response.json();
       let whoIsHiringRequest = await fetch(
         `https://hacker-news.firebaseio.com/v0/item/${latestWhoIsHiringId}.json`
       );
@@ -29,10 +30,15 @@ export default function(props) {
       let jsonListings = await Promise.all(
         listingResponses.map(resp => resp.json())
       );
-      let mungedListings = jsonListings.map(jsonListing => ({
-        description: jsonListing.text,
-        remote: jsonListing.text.toUpperCase().includes('REMOTE')
-      }));
+      let mungedListings = jsonListings
+        .filter(
+          jsonListing =>
+            jsonListing.text !== null && jsonListing.text !== undefined
+        )
+        .map(jsonListing => ({
+          description: jsonListing.text,
+          remote: jsonListing.text.toUpperCase().includes('REMOTE')
+        }));
 
       if (!isCancelled) {
         setListings(mungedListings);

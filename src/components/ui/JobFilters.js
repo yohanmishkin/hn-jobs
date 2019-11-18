@@ -1,3 +1,4 @@
+import technologies from '../../domain/technologies';
 import React from 'react';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
@@ -8,7 +9,7 @@ const JobFilters = function jobFilters(props) {
   };
 
   const updateTechnologies = technologies => {
-    props.technologiesChanged(technologies.map(tech => tech.value));
+    props.technologiesChanged((technologies || []).map(tech => tech.value));
   };
 
   return (
@@ -17,10 +18,10 @@ const JobFilters = function jobFilters(props) {
       <Select
         inputId="technologies-multi-select"
         isMulti={true}
-        options={[
-          { value: 'clojure', label: 'Clojure' },
-          { value: 'elm', label: 'Elm' }
-        ]}
+        options={technologies.map(t => ({
+          value: t,
+          label: t
+        }))}
         onChange={updateTechnologies}
       />
 
