@@ -9,7 +9,7 @@ export default function JobListings({ isLoading, results }) {
     <ul>
       {results.map((result, index) => (
         <li key={index} data-testid={`listing-${result.id}`}>
-          {result.id}
+          {result.description}
         </li>
       ))}
     </ul>
