@@ -1,96 +1,96 @@
+import App from '../App';
+import { Polly } from '@pollyjs/core';
+import XHRAdapter from '@pollyjs/adapter-xhr';
+import FSPersister from '@pollyjs/persister-fs';
 import {
   fireEvent,
   render,
   waitForElementToBeRemoved
 } from '@testing-library/react';
 import React from 'react';
-import App from '../App';
-import { makeServer } from '../server';
+import { setupPolly } from 'setup-polly-jest';
+
+Polly.register(XHRAdapter);
+Polly.register(FSPersister);
 
 describe('gnews', () => {
-  let server;
-
-  beforeEach(() => {
-    server = makeServer({ environment: 'test' });
+  let context = setupPolly({
+    adapters: ['xhr'],
+    persister: 'fs'
   });
 
-  afterEach(() => {
-    server.shutdown();
+  beforeEach(() => {
+    context.polly.configure({ recordIfMissing: true });
+  });
+
+  afterEach(async () => {
+    await context.polly.flush();
   });
 
   it('renders without crashing', () => {
     const { getByText } = render(<App />);
 
-    expect(getByText('Welcome')).toBeDefined();
+    expect(getByText('Welcome'));
   });
 
   it('can filter for remote listings', async () => {
-    let listingA = server.create('listing', { remote: true });
-    let listingB = server.create('listing', { remote: true });
-    server.create('listing', { remote: false });
+    const { getByTestId, getByLabelText, getByText } = render(<App />);
 
-    const { getByTestId, getByLabelText, getByText, findByTestId } = render(
-      <App />
-    );
+    await waitForElementToBeRemoved(() => getByTestId('loading'), {
+      timeout: 10000
+    });
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    expect(getByText('664 job listings'));
 
     fireEvent.click(getByLabelText('Remote'));
 
-    await findByTestId(`listing-${listingA.id}`);
-    await findByTestId(`listing-${listingB.id}`);
-
-    expect(getByText('2 job listings'));
+    expect(getByText('220 job listings'));
   });
 
   it('can filter by multiple technologies', async () => {
-    let listingA = server.create('listing', {
-      description: 'Clojure is INTRIGUING',
-      remote: false
-    });
-    let listingB = server.create('listing', {
-      description: 'Elm is COOL',
-      remote: true
-    });
-    server.create('listing', { description: 'C is FAST' });
-    server.create('listing', { description: 'Javascript' });
+    const { getByTestId, getByLabelText, getByText } = render(<App />);
 
-    const { findByTestId, getByTestId, getByLabelText, getByText } = render(
-      <App />
-    );
+    await waitForElementToBeRemoved(() => getByTestId('loading'), {
+      timeout: 10000
+    });
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    expect(getByText('664 job listings'));
 
     fireEvent.change(getByLabelText('Technologies'), {
       target: { value: 'clojure' }
     });
     fireEvent.click(getByText('Clojure'));
 
-    await findByTestId(`listing-${listingA.id}`);
+    expect(getByText('14 job listings'));
 
     fireEvent.change(getByLabelText('Technologies'), {
       target: { value: 'elm' }
     });
     fireEvent.click(getByText('Elm'));
 
-    await findByTestId(`listing-${listingB.id}`);
+    expect(getByText('17 job listings'));
   });
 
   it('loading spinner displayed while fetching listings', () => {
     const { getByTestId } = render(<App />);
 
-    expect(getByTestId('loading')).toBeDefined();
+    expect(getByTestId('loading'));
   });
 
   it('it shows message when no listings found', async () => {
     const { getByTestId, getByText, getByLabelText } = render(<App />);
 
-    await waitForElementToBeRemoved(() => getByTestId('loading'));
+    await waitForElementToBeRemoved(() => getByTestId('loading'), {
+      timeout: 10000
+    });
+
+    fireEvent.change(getByLabelText('Technologies'), {
+      target: { value: 'ocaml' }
+    });
+    fireEvent.click(getByText('Ocaml'));
 
     fireEvent.click(getByLabelText('Remote'));
 
-    expect(
-      getByText("Sorry! We couldn't find any listings like that.")
-    ).toBeDefined();
+    expect(getByText("Sorry! We couldn't find any listings like that."));
   });
 });

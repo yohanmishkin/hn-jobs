@@ -21,11 +21,9 @@ export default function(props) {
       );
       let { kids: listingIds } = await whoIsHiringRequest.json();
       let listingResponses = await Promise.all(
-        listingIds
-          .slice(0, 30)
-          .map(id =>
-            fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
-          )
+        listingIds.map(id =>
+          fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+        )
       );
       let jsonListings = await Promise.all(
         listingResponses.map(resp => resp.json())
