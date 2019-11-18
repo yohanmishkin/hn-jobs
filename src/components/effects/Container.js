@@ -10,11 +10,32 @@ export default function(props) {
     const fetchData = async () => {
       setIsLoading(true);
 
-      let response = await fetch(`/api/listings`);
-      let json = await response.json();
+      let response = await fetch(
+        `https://hacker-news.firebaseio.com/v0/user/whoishiring.json`
+      );
+      let { submitted: whoIsHiring } = await response.json();
+      let latestWhoIsHiringId = whoIsHiring[0];
+      let whoIsHiringRequest = await fetch(
+        `https://hacker-news.firebaseio.com/v0/item/${latestWhoIsHiringId}.json`
+      );
+      let { kids: listingIds } = await whoIsHiringRequest.json();
+      let listingResponses = await Promise.all(
+        listingIds
+          .slice(0, 30)
+          .map(id =>
+            fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+          )
+      );
+      let jsonListings = await Promise.all(
+        listingResponses.map(resp => resp.json())
+      );
+      let mungedListings = jsonListings.map(jsonListing => ({
+        description: jsonListing.text,
+        remote: jsonListing.text.toUpperCase().includes('REMOTE')
+      }));
 
       if (!isCancelled) {
-        setListings(json);
+        setListings(mungedListings);
         setIsLoading(false);
       }
     };
