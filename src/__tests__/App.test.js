@@ -1,7 +1,7 @@
 import App from '../App';
 import { Polly } from '@pollyjs/core';
-import XHRAdapter from '@pollyjs/adapter-xhr';
 import FSPersister from '@pollyjs/persister-fs';
+import NodeHttpAdapter from '@pollyjs/adapter-node-http';
 import {
   fireEvent,
   render,
@@ -10,12 +10,12 @@ import {
 import React from 'react';
 import { setupPolly } from 'setup-polly-jest';
 
-Polly.register(XHRAdapter);
+Polly.register(NodeHttpAdapter);
 Polly.register(FSPersister);
 
-describe('gnews', () => {
+describe('hn-jobs', () => {
   let context = setupPolly({
-    adapters: ['xhr'],
+    adapters: ['node-http'],
     persister: 'fs'
   });
 
@@ -27,12 +27,6 @@ describe('gnews', () => {
     await context.polly.flush();
   });
 
-  it('renders without crashing', () => {
-    const { getByText } = render(<App />);
-
-    expect(getByText('Welcome'));
-  });
-
   it('can filter for remote listings', async () => {
     const { getByTestId, getByLabelText, getByText } = render(<App />);
 
@@ -40,11 +34,11 @@ describe('gnews', () => {
       timeout: 10000
     });
 
-    expect(getByText('664 job listings'));
+    expect(getByText('409 job listings'));
 
     fireEvent.click(getByLabelText('Remote'));
 
-    expect(getByText('220 job listings'));
+    expect(getByText('147 job listings'));
   });
 
   it('can filter by multiple technologies', async () => {
@@ -54,24 +48,24 @@ describe('gnews', () => {
       timeout: 10000
     });
 
-    expect(getByText('664 job listings'));
+    expect(getByText('409 job listings'));
 
     fireEvent.change(getByLabelText('Technologies'), {
       target: { value: 'clojure' }
     });
     fireEvent.click(getByText('Clojure'));
 
-    expect(getByText('14 job listings'));
+    expect(getByText('7 job listings'));
 
     fireEvent.change(getByLabelText('Technologies'), {
       target: { value: 'elm' }
     });
     fireEvent.click(getByText('Elm'));
 
-    expect(getByText('17 job listings'));
+    expect(getByText('8 job listings'));
   });
 
-  it('loading spinner displayed while fetching listings', () => {
+  it('loading spinner displayed while fetching listings', async () => {
     const { getByTestId } = render(<App />);
 
     expect(getByTestId('loading'));
@@ -85,9 +79,9 @@ describe('gnews', () => {
     });
 
     fireEvent.change(getByLabelText('Technologies'), {
-      target: { value: 'ocaml' }
+      target: { value: 'foundationdb' }
     });
-    fireEvent.click(getByText('Ocaml'));
+    fireEvent.click(getByText('Foundationdb'));
 
     fireEvent.click(getByLabelText('Remote'));
 

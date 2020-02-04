@@ -46,7 +46,7 @@ export default function(props) {
 
     fetchData();
 
-    return () => {
+    return function cleanup() {
       isCancelled = true;
     };
   }, []);
