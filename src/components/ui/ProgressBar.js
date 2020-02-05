@@ -2,8 +2,8 @@ import React from 'react';
 
 const ProgressBar = ({ complete, toComplete }) => {
   return (
-    <div data-testid="loading">
-      <label htmlFor="progress-bar" className="hidden">Listings loaded:</label>
+    <div className="progress-container" data-testid="loading">
+      <label htmlFor="progress-bar" className="progress-label">Loading</label>
       <progress 
         id="progress-bar" 
         max={toComplete}

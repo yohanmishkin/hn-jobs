@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
+const HACKER_NEWS_API = 'https://hacker-news.firebaseio.com';
+
 export default function(props) {
-  // let n = 0;
   const [listings, setListings] = useState([]);
   const [requestCount, setRequestCount] = useState(0);
   const [completedRequests, setCompletedRequests] = useState(0);
@@ -21,7 +22,7 @@ export default function(props) {
 
       let listingResponses = await Promise.all(
         listingIds.map(id =>
-          fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(response => {
+          fetch(`${HACKER_NEWS_API}/v0/item/${id}.json`).then(response => {
             setCompletedRequests(previous => previous + 1);
             return response;
           })
@@ -39,6 +40,7 @@ export default function(props) {
         )
         .map(jsonListing => ({
           description: jsonListing.text,
+          id: jsonListing.id,
           remote: jsonListing.text.toUpperCase().includes('REMOTE')
         }));
 
@@ -65,7 +67,7 @@ export default function(props) {
 
 async function getLatestWhoIsHiring() {
   let response = await fetch(
-    `https://hacker-news.firebaseio.com/v0/user/whoishiring.json`
+    `${HACKER_NEWS_API}/v0/user/whoishiring.json`
   );
 
   let {
@@ -77,7 +79,7 @@ async function getLatestWhoIsHiring() {
 
 async function getListingIds(latestWhoIsHiringId) {
   let whoIsHiringRequest = await fetch(
-    `https://hacker-news.firebaseio.com/v0/item/${latestWhoIsHiringId}.json`
+    `${HACKER_NEWS_API}/v0/item/${latestWhoIsHiringId}.json`
   );
 
   let { kids: listingIds } = await whoIsHiringRequest.json();

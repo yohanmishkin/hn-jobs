@@ -13,20 +13,25 @@ const JobFilters = function jobFilters(props) {
   };
 
   return (
-    <form>
-      <label htmlFor="technologies-multi-select">Technologies</label>
-      <Select
-        inputId="technologies-multi-select"
-        isMulti={true}
-        options={technologies.map(t => ({
-          value: t,
-          label: t
-        }))}
-        onChange={updateTechnologies}
-      />
+    <form className="mb-1 flex">
+      <fieldset className="flex-grow-1">
+        <label className="size-115" htmlFor="technologies-multi-select">Technologies</label>
+        <Select
+          classNamePrefix="tech-select"
+          inputId="technologies-multi-select"
+          isMulti={true}
+          options={technologies.map(t => ({
+            value: t,
+            label: t
+          }))}
+          onChange={updateTechnologies}
+        />
+      </fieldset>
 
-      <label htmlFor="remote-checkbox">Remote</label>
-      <input id="remote-checkbox" onChange={toggleRemoteJobs} type="checkbox" />
+      <fieldset className="flex">
+        <label className="size-115" htmlFor="remote-checkbox">Remote</label>
+        <input id="remote-checkbox" onChange={toggleRemoteJobs} type="checkbox" />
+      </fieldset>
     </form>
   );
 };

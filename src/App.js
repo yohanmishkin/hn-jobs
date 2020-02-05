@@ -8,7 +8,7 @@ import React from 'react';
 function App() {
   return (
     <div className="App">
-      <h1>The latest Hacker News job listings</h1>
+      <h1 className="heading mb-1 mt-1">The latest Hacker News job listings</h1>
 
       <Container>
         {container => {
@@ -30,7 +30,7 @@ function App() {
                     remoteChanged={remoteChanged}
                   />
 
-                  <h2>{results.length} job listings</h2>
+                  <h2 className="heading">{results.length} job listings</h2>
 
                   <JobListings results={results} />
                 </div>
