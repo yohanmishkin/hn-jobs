@@ -1,5 +1,6 @@
 import Container from './components/effects/Container';
 import SearchResults from './components/effects/SearchResults';
+import ProgressBar from './components/ui/ProgressBar';
 import JobFilters from './components/ui/JobFilters';
 import JobListings from './components/ui/JobListings';
 import React from 'react';
@@ -7,12 +8,17 @@ import React from 'react';
 function App() {
   return (
     <div className="App">
-      <h1>Welcome</h1>
+      <h1>The latest Hacker News job listings</h1>
 
       <Container>
         {container => {
           if (container.isLoading) {
-            return <h2 data-testid="loading">Loading...</h2>;
+            return (
+              <ProgressBar 
+                complete={container.completedRequests} 
+                toComplete={container.requestCount} 
+              />
+            );
           }
 
           return (

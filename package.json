@@ -34,6 +34,7 @@
     "@pollyjs/adapter-node-http": "^4.0.3",
     "@pollyjs/core": "^4.0.2",
     "@pollyjs/persister-fs": "^4.0.2",
+    "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^9.4.0",
     "eslint-plugin-react-hooks": "^2.2.0",
     "miragejs": "^0.1.33",

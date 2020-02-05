@@ -1,9 +1,13 @@
 # Features
 
-Tech multi-select
-Remote
-Total count
-Add chart for trend
+- progress bar
+- j/k up/down support
+- style
+- chart for trends
+
++ Tech multi-select
++ Remote
++ Total count
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
