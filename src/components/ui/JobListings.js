@@ -10,7 +10,7 @@ export default function JobListings({ isLoading, results }) {
       {results.map((result, index) => (
         <li key={index} className="mb-1" data-testid={`listing-${result.id}`}>
           <h3 className="heading mb-25">{result.description.substring(0, result.description.indexOf('<p>'))}</h3>
-          <p>{result.description.substring(result.description.indexOf('<p>'))}</p>
+          <p dangerouslySetInnerHTML={{ __html: result.description.substring(result.description.indexOf('<p>'))}}></p>
         </li>
       ))}
     </ul>
