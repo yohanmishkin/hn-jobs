@@ -13,9 +13,9 @@ const JobFilters = function jobFilters(props) {
   };
 
   return (
-    <form className="mb-1 flex">
-      <fieldset className="flex-grow-1">
-        <label className="size-115" htmlFor="technologies-multi-select">Technologies</label>
+    <form className="mb-2 flex" onSubmit={e => e.preventDefault()}>
+      <fieldset className="flex flex-col flex-grow-1 pr-2">
+        <label className="color-green mb-25 size-115" htmlFor="technologies-multi-select">Technologies</label>
         <Select
           classNamePrefix="tech-select"
           inputId="technologies-multi-select"
@@ -28,8 +28,8 @@ const JobFilters = function jobFilters(props) {
         />
       </fieldset>
 
-      <fieldset className="flex">
-        <label className="size-115" htmlFor="remote-checkbox">Remote</label>
+      <fieldset className="flex flex-col">
+        <label className="color-green mb-25 size-115" htmlFor="remote-checkbox">Remote</label>
         <input id="remote-checkbox" onChange={toggleRemoteJobs} type="checkbox" />
       </fieldset>
     </form>

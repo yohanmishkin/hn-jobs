@@ -4,6 +4,8 @@ h1, h2, h3, h4, p {
 } 
 fieldset {
   border: unset;
+  margin: unset;
+  padding: unset;
 }
 /* end resets */
 
@@ -31,12 +33,24 @@ body {
   color: #fffffe;
 }
 
+.color-green {
+  color: #2cb67d;
+}
+
+.color-orange {
+  color: #ff6600;
+}
+
 .color-purple {
   color: #7f5af0;
 }
 
 .flex {
   display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
 }
 
 .flex-grow-1 {
@@ -51,8 +65,12 @@ body {
   margin-bottom: 1rem;
 }
 
-.mt-1 {
-  margin-top: 1rem;
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+.pr-2 {
+  padding-right: 2rem;
 }
 
 .size-115 {
@@ -94,12 +112,8 @@ progress[value]::-webkit-progress-value, progress[value]::-moz-progress-bar {
   color: #fffffe;  
 }
 
-.tech-select__option {
-  color: green;
-}
-
 .tech-select__placeholder {
-  color: red;
+  color: #7f5af0 !important;
 }
 
 .tech-select__menu {
@@ -115,4 +129,9 @@ progress[value]::-webkit-progress-value, progress[value]::-moz-progress-bar {
 
 .tech-select__multi-value__label {
   color: white !important;
+}
+
+
+.App {
+  padding: 2rem;
 }
